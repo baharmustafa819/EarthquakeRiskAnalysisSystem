@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Deprem Risk Analiz Sistemi - İstanbul</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+  <main class="container py-4">
+    <header class="mb-4">
+      <h1 class="mb-2 text-primary">Evin Ne Kadar Güvenli?</h1>
+      <p class="text-muted">İstanbul odaklı deprem risk puanlaması (Bina yaşı + Kat sayısı + Zemin riski)</p>
+    </header>
+
+    <div class="row g-4">
+      <section class="col-lg-5">
+        <div class="card shadow-sm border-0 mb-3">
+          <div class="card-body">
+            <h2 class="h5 mb-3 fw-bold">Hızlı Risk Hesaplama</h2>
+            <form id="riskForm" class="vstack gap-3">
+
+              <div>
+                <label class="form-label d-block fw-semibold">İlçe Seçimi</label>
+                <p class="small text-muted mb-2">Lütfen analiz edilecek ilçeyi seçin:</p>
+                <input id="district" type="hidden" name="district" required />
+
+                <div id="districtTabs" class="district-tabs-container p-2" role="group" aria-label="İlçe Seçimi">
+                  {% for district in districts %}
+                  <button type="button" class="btn btn-sm btn-outline-primary district-tab"
+                    data-district="{{ district }}">
+                    {{ district }}
+                  </button>
+                  {% endfor %}
+                </div>
+
+                <div class="mt-3">
+                  <span id="selectedDistrictText" class="badge rounded-pill bg-info text-dark d-none px-3 py-2">
+                    Seçilen İlçe: <strong class="ms-1">-</strong>
+                  </span>
+                </div>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-6">
+                  <label for="buildingAge" class="form-label fw-semibold">Bina Yaşı</label>
+                  <input type="number" class="form-control" id="buildingAge" min="0" max="150" placeholder="Örn: 15"
+                    required />
+                </div>
+                <div class="col-6">
+                  <label for="floors" class="form-label fw-semibold">Kat Sayısı</label>
+                  <input type="number" class="form-control" id="floors" min="1" max="80" placeholder="Örn: 5"
+                    required />
+                </div>
+              </div>
+
+              <button class="btn btn-primary w-100 mt-2 fw-bold" type="submit" id="submitBtn">Puanı Hesapla</button>
+            </form>
+          </div>
+        </div>
+
+        <div id="resultCard" class="card shadow-sm border-0 d-none">
+          <div class="card-body text-center">
+            <h3 class="h5 mb-2 fw-bold text-secondary">Analiz Sonucu</h3>
+            <div class="display-3 fw-bold text-primary mb-2" id="scoreText">0</div>
+            <div id="riskBadge" class="badge fs-6 mb-3">-</div>
+            <p id="recommendationText" class="mb-3 text-muted fw-medium"></p>
+            <hr>
+            <ul class="list-unstyled small mb-0 text-start">
+              <li class="mb-1"><strong>Bina Yaşı Etkisi:</strong> <span id="ageRisk" class="float-end">-</span></li>
+              <li class="mb-1"><strong>Kat Sayısı Etkisi:</strong> <span id="floorRisk" class="float-end">-</span></li>
+              <li><strong>Zemin Etkisi:</strong> <span id="soilRisk" class="float-end">-</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="col-lg-7">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex flex-column">
+            <h2 class="h5 mb-2 fw-bold">İstanbul İlçe Haritası</h2>
+            <p class="small text-muted mb-3">Seçtiğiniz ilçe harita üzerinde otomatik olarak odaklanacaktır.</p>
+            <div id="map" class="flex-grow-1 rounded"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="/static/app.js"></script>
+</body>
+
+</html>
